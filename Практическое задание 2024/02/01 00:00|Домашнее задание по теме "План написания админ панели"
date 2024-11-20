@@ -1,0 +1,30 @@
+import sqlite3
+connection=sqlite3.connect("not_telegram.db")
+cursor=connection.cursor()
+cursor.execute('''
+CREATE TABLE IF NOT EXISTS Products(
+id INTEGER PRIMARY KEY,
+title TEXT NOT NULL,
+description TEXT,
+price INTEGER NOT NULL
+)
+''')
+
+cursor.execute("CREATE INDEX IF NOT EXISTS idx_id ON Products (id)")
+
+
+
+for i in range(5):
+    cursor.execute('INSERT INTO Products(title,description,price) VALUES (?,?,?)',(f'Продукт{i+1}',f'Описание{i+1}@gmail.com',f'{100*i}'))
+
+#
+def get_all_products():
+    cursor.execute('SELECT  title, description, price FROM Products')
+    products = cursor.fetchall()
+    connection.commit()
+    return products
+
+
+
+connection.commit()
+connection.close()
